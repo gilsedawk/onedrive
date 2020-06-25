@@ -582,12 +582,13 @@ onedrive --monitor --verbose --confdir="~/.config/onedriveWork" &
 *   `--monitor` keeps the application running and monitoring for changes both local and remote
 *   `&` puts the application in background and leaves the terminal interactive
 
-### Automatic syncing of both OneDrive accounts
+### Automatic syncing of both OneDrive accounts (Arch, Ubuntu, Debian, OpenSuSE, Fedora)
 
-In order to automatically start syncing your OneDrive accounts, you will need to create a service file for each account. From the `/usr/lib/systemd/system` folder:
+In order to automatically start syncing your OneDrive accounts, you will need to create a service file for each account. From the `/usr/lib/systemd/user` folder:
 ```text
 cp onedrive.service onedrive-work.service
 ```
+
 And edit the line beginning with `ExecStart` so that the confdir mirrors the one you used above:
 ```text
 ExecStart=/usr/local/bin/onedrive --monitor --confdir="/path/to/config/dir"
@@ -597,6 +598,54 @@ Then you can safely run these commands:
 systemctl --user enable onedrive-work
 systemctl --user start onedrive-work
 ```
+Repeat these steps for each OneDrive account that you wish to use.
+
+
+### Automatic syncing of both OneDrive accounts as root via systemd (Red Hat Enterprise Linux, CentOS Linux)
+
+In order to automatically start syncing your OneDrive accounts, you will need to create a service file for each account. From the `/usr/lib/systemd/system` folder:
+```text
+cp onedrive.service /etc/systemd/system/onedrive-<jobname>.service
+```
+
+Edit the line beginning with `ExecStart` so that the confdir mirrors the one you used above:
+```text
+ExecStart=/usr/local/bin/onedrive --monitor --confdir="/path/to/config/dir"
+```
+Then you can safely run these commands:
+```text
+systemctl --user enable onedrive-<jobname>.service
+systemctl --user start onedrive-<jobname>.service
+```
+
+Repeat these steps for each OneDrive account that you wish to use.
+
+
+### Automatic syncing of both OneDrive accounts as non-root user via systemd (Red Hat Enterprise Linux, CentOS Linux)
+
+In order to automatically start syncing your OneDrive accounts, you will need to create a service file for each account. From the `/usr/lib/systemd/system` folder:
+```text
+cp onedrive@.service /etc/systemd/system/onedrive-<jobname>@<username>.service
+```
+
+Edit the line beginning with `ExecStart` so that the confdir mirrors the one you used above:
+```text
+ExecStart=/usr/local/bin/onedrive --monitor --confdir="/path/to/config/dir"
+```
+Then you can safely run these commands:
+```text
+systemctl --user enable onedrive-<jobname>@<username>.service
+systemctl --user start onedrive-<jobname>@<username>.service
+```
+Where <jobname> for example is: work 
+And <username> is the user you want the service to run as, for example: alex
+	
+This would result in the following commands:
+```text
+systemctl --user enable onedrive-work@alex.service
+systemctl --user start onedrive-work@alex.service
+```
+
 Repeat these steps for each OneDrive account that you wish to use.
 
 ### Access OneDrive service through a proxy
